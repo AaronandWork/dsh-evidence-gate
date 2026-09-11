@@ -1,0 +1,10 @@
+node_modules/
+*.log
+*.tmp
+.store.json
+evidence-gate-store.json
+.DS_Store
+Thumbs.db
+.npmrc
+PUBLISH.md
+upload/

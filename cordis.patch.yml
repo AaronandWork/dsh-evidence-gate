@@ -1,0 +1,4 @@
+# dsh-evidence-gate bundle layer: inserts the plugin row into the host composition.
+- insert:
+    - id: evidence-gate
+      name: '@aaronandwork/dsh-evidence-gate'
