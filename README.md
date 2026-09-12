@@ -56,6 +56,7 @@ Prompt-only "don't guess" instructions are unenforceable and unauditable. This p
 
 - **Per-session everything**: the switch, the ledger, and the prompt section are scoped to `sessionId`. Turning the gate on in one conversation never leaks into another; the chip tooltip shows 本会话 stats only. The policy section's text provider resolves per assembly (`context.agent.sessionId`).
 - **Persistence**: ledger + switch + evidence index survive deployment restarts and context compaction (JSON store under `DSH_HOME/evidence-gate/store.json`, debounced atomic writes; override the path with `EVIDENCE_GATE_STORE`). Top 50 sessions by recency are kept.
+- **Quiet startup**: mounting the bundle prints nothing to the host console — set `EVIDENCE_GATE_DEBUG=1` to print the load breadcrumbs (store restore + each registered component) when diagnosing a mount problem. Error/warning diagnostics are never gated.
 - **Output-aware cross-check**: evidence like "pnpm test → SMOKE PASSED" now correlates against recorded tool OUTPUT (keywords, paths, URLs extracted from the `tools/result` payload), not just command strings.
 - **Honest-claim protection**: misses fall through to other sessions (subagent work), then to an existence floor (a cited path that really exists on disk passes with a weak/采信 note instead of blocking). Fabricated paths, empty evidence, and `assumption` still block.
 
@@ -178,7 +179,7 @@ agent 声称「我读过这个文件」时，**会与本会话真实的工具活
 | 卡片徽章 | 工具卡标题：🟢 已实证 · 🔵 已引用 · 🟠 已拦截 · ⚪ 门未开启 |
 | 开关 | `/evidence-gate on\|off\|status\|report` + `evidence_gate_switch` 模型工具——**按会话**，持久保留 |
 
-**v0.2 语义**：开关、台账、策略段全部按 `sessionId` 作用域——会话之间互不泄漏，未开启的会话策略段装配为空串；台账 + 开关 + 证据索引跨重启、跨上下文压缩保留（存储于 `DSH_HOME/evidence-gate/store.json`，可用 `EVIDENCE_GATE_STORE` 覆盖，按最近使用保留 50 个会话）；证据引用如「pnpm test → SMOKE PASSED」可命中**已记录的输出**（从 `tools/result` 提取的关键词、路径、URL），不再只对命令串；诚实声称保护：未命中时依次落跨会话（子代理工作）→ 存在性底线（引用路径真实存在则以弱核验/采信放行）；编造路径、空证据、`assumption` 仍然拦截。UI 桥接路由仅接受**同源** `application/json` POST、请求体上限 64KB、会话键与 action 先行校验、`status` 严格只读——无关网页既不能借它拖垮宿主，也翻不动别的会话的开关。所有数据只存本地，存储文件是可直接查看/删除的纯 JSON。
+**v0.2 语义**：开关、台账、策略段全部按 `sessionId` 作用域——会话之间互不泄漏，未开启的会话策略段装配为空串；台账 + 开关 + 证据索引跨重启、跨上下文压缩保留（存储于 `DSH_HOME/evidence-gate/store.json`，可用 `EVIDENCE_GATE_STORE` 覆盖，按最近使用保留 50 个会话）；**启动默认静默**（挂载时不向宿主控制台打印任何内容，排障时设 `EVIDENCE_GATE_DEBUG=1` 可输出加载凭据：存储恢复与各组件注册；错误/告警诊断不受此开关影响）；证据引用如「pnpm test → SMOKE PASSED」可命中**已记录的输出**（从 `tools/result` 提取的关键词、路径、URL），不再只对命令串；诚实声称保护：未命中时依次落跨会话（子代理工作）→ 存在性底线（引用路径真实存在则以弱核验/采信放行）；编造路径、空证据、`assumption` 仍然拦截。UI 桥接路由仅接受**同源** `application/json` POST、请求体上限 64KB、会话键与 action 先行校验、`status` 严格只读——无关网页既不能借它拖垮宿主，也翻不动别的会话的开关。所有数据只存本地，存储文件是可直接查看/删除的纯 JSON。
 
 **已验证示例（来自实际开发）**：
 

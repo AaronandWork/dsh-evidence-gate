@@ -1,6 +1,6 @@
 {
   "name": "@aaronandwork/dsh-evidence-gate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Evidence-first conclusion gate for DeepSeek Harness (DSH): 3-tier evidence hierarchy policy, a model tool that verdicts claims (VERIFIED/REFERENCED/UNVERIFIED), durable per-session tool-activity cross-checking (arguments + output anchors, restart-surviving), per-session switch + persisted ledger, and a session-scoped UI toggle.",
   "main": "lib/index.js",
   "exports": {
